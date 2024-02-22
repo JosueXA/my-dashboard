@@ -41,6 +41,11 @@ const counterSlice = createSlice({
   }
 });
 
-export const { addOne, substractOne, resetCounter, initCounterState } = counterSlice.actions;
+export const { 
+  initCounterState,
+  addOne, 
+  substractOne, 
+  resetCounter,
+} = counterSlice.actions;
 
 export default counterSlice.reducer;

@@ -1,7 +1,12 @@
+'use client'
+
 import Link from "next/link"
-import { SimplePokemon } from "../interfaces/simple-pokemon"
 import Image from "next/image";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { useAppSelector, useAppDispatch } from "@/store";
+
+import { SimplePokemon } from "../interfaces/simple-pokemon"
+import { toggleFavorite } from "@/store/pokemons/pokemons";
 
 interface Props {
   pokemon: SimplePokemon;
@@ -11,6 +16,13 @@ interface Props {
 export const PokemonCard = ({ pokemon }: Props) => {
 
   const { id, name } = pokemon;
+  const isFavorite = useAppSelector( state => !!state.pokemons.favorites[ id ] );
+  const dispatch = useAppDispatch();
+
+  const onToggle = () => {
+    dispatch( toggleFavorite(pokemon) );
+    
+  }
 
   return (
     <div className="mx-auto right-0 mt-2 w-60">
@@ -26,7 +38,9 @@ export const PokemonCard = ({ pokemon }: Props) => {
               priority={ false }
             />
 
-            <p className="pt-2 text-lg font-semibold text-gray-50 capitalize">{ name }</p>
+            <p className="pt-2 text-lg font-semibold text-gray-50 capitalize">
+              { name }
+            </p>
             <div className="mt-5">
                 <Link
                   href={`/dashboard/pokemons/${ name }`}
@@ -37,17 +51,28 @@ export const PokemonCard = ({ pokemon }: Props) => {
             </div>
             </div>
             <div className="border-b">
-                <Link href="/dashboard/main" className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                <div onClick={ onToggle }
+                  className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                   <div className="text-red-600">
-                    <IoHeartOutline />
+                    {
+                      isFavorite
+                        ? <IoHeart />
+                        : <IoHeartOutline />
+                    }
                   </div>
                   <div className="pl-3">
                   <p className="text-sm font-medium text-gray-800 leading-none">
-                      No es favorito
+                      {
+                        isFavorite
+                          ? 'Es favorito'
+                          : 'No es favorito'
+                      }
                   </p>
-                  <p className="text-xs text-gray-500">View your campaigns</p>
+                  <p className="text-xs text-gray-500">
+                    Click para cambiar
+                  </p>
                   </div>
-                </Link>
+                </div>
                 
             </div>
 
@@ -55,10 +80,4 @@ export const PokemonCard = ({ pokemon }: Props) => {
     </div>
   )
 
-  // Hospital de la ceguera
-  // 55 1084 1400
-  // Opción 3 
-
-  // Campos visuales aprox: $1000
-  // OCT nervio optico para ambos ojos aprox: $2000
 }
